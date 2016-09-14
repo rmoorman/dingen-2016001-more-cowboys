@@ -11,6 +11,26 @@ defmodule Dingen do
       # Starts a worker by calling: Dingen.Worker.start_link(arg1, arg2, arg3)
       # worker(Dingen.Worker, [arg1, arg2, arg3]),
       worker(:dingen_dispenser, []),
+      worker(
+        Dingen.Server,
+        [%{name: Dingen.ElixirHTTP, port: 8000, protocol: :HTTP}],
+        [id: Dingen.ElixirHTTP]
+      ),
+      worker(
+        Dingen.Server,
+        [%{name: Dingen.ElixirHTTPS, port: 8001, protocol: :HTTPS}],
+        [id: Dingen.ElixirHTTPS]
+      ),
+      #      worker(
+      #        :dingen_server,
+      #        [%{:name => Dingen.ErlangHTTP, :port => 8002, :protocol => :HTTP}],
+      #        [id: Dingen.ErlangHTTP]
+      #      ),
+      #      worker(
+      #        :dingen_server,
+      #        [%{:name => Dingen.ErlangHTTPS, :port => 8003, :protocol => :HTTPS}],
+      #        [id: Dingen.ErlangHTTPS]
+      #      ),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

@@ -21,7 +21,10 @@ start_link() ->
 %%% gen_server callbacks
 init(_Args) -> {ok, undefined}.
 
-handle_call(_, _From, State) ->
+handle_call(ssl, _From, State) ->
+  Reply = some_certificate(),
+  {reply, Reply, State};
+handle_call(random, _From, State) ->
   Reply = some_random_thing(),
   {reply, Reply, State}.
 
@@ -33,6 +36,9 @@ code_change(_, State, _) -> {ok, State}.
 
 
 %%% Internals
+some_certificate() ->
+  #{cert => "iets", key => "anders"}.
+
 some_random_thing() ->
   List = [
     "amigo", "banjo", "beach", "beard", "boxes",
