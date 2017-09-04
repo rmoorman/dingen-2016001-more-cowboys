@@ -15,10 +15,12 @@ defmodule Dingen.Server do
 
   def handle_cast(:start_webserver, state) do
     # Collect webserver configuration.
-    %{name: name, port: port, protocol: protocol} = state[:options]
+    %{options: %{name: name, port: port, protocol: protocol}} = state
     routes = [
       {:_, [
-          {"/", Dingen.Handler, []}
+          {"/", Dingen.Handler.Index, []},
+          {"/hello-world/", Dingen.Handler.World, []},
+          {"/hello-random/", Dingen.Handler.Random, []},
       ]}
     ]
     dispatch = :cowboy_router.compile(routes)
@@ -39,7 +41,7 @@ defmodule Dingen.Server do
         :cowboy.start_https(name, acceptors, trans_opts, proto_opts)
     end
 
-    # Check if things went well (initially as well as on gen server restart.
+    # Check if things went well (initially as well as on gen server restart).
     case cowboy_result do
       {:ok, _pid} -> :ok
       {:error, {:already_started, _pid}} -> :ok
@@ -49,15 +51,15 @@ defmodule Dingen.Server do
 
     # Restarting cowboy
     # =================
-    # Restarting can of course be done by stopping and starting the listeners
-    # again.
+    # Restarting can of course be done by stopping the listeners and starting
+    # them again unconditionally.
     #
-    # Rather than stopping and starting the cowboy listener unconditionally, it
+    # Rather than stopping and starting the cowboy listener just like that, it
     # would probably be better to check if that is actually needed. The check
     # could involve the following steps:
     #
     # * check if there is a matching ranch listener already with the given name
-    # * get the listener's child specification specification
+    # * get the listener's child specification
     # * compare the child specification with the currently needed configuration
     #
     # And in case there is no ranch listener we would start one, in case there
@@ -88,8 +90,9 @@ defmodule Dingen.Server do
     #     env = [dispatch: dispatch]
     #     {:ok, _pid} = :cowboy.start_http(name, 100, opts, env)
     #   {:ok, childspec} ->
-    #     # check childspec
-    #     # in case it is not right stop and start a new one
+    #     # check childspec and in case it does not match the requirements
+    #     # we stop and start a new listener
+    #     # ...
     #     :ok
     # end
   end

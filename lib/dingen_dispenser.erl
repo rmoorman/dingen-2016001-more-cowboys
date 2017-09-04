@@ -19,26 +19,33 @@ start_link() ->
 
 
 %%% gen_server callbacks
-init(_Args) -> {ok, undefined}.
+init(_Args) ->
+  {ok, undefined}.
 
-handle_call(ssl, _From, State) ->
-  Reply = some_certificate(),
-  {reply, Reply, State};
+
 handle_call(random, _From, State) ->
   Reply = some_random_thing(),
   {reply, Reply, State}.
 
-handle_cast(_, State) -> {noreply, State}.
-handle_info(_, State) -> {noreply, State}.
-terminate(_, _State) -> ok.
-code_change(_, State, _) -> {ok, State}.
+
+handle_cast(_, State) ->
+  {noreply, State}.
+
+
+handle_info(_, State) ->
+  {noreply, State}.
+
+
+terminate(_, _State) ->
+  ok.
+
+
+code_change(_, State, _) ->
+  {ok, State}.
 
 
 
 %%% Internals
-some_certificate() ->
-  #{cert => "iets", key => "anders"}.
-
 some_random_thing() ->
   List = [
     "amigo", "banjo", "beach", "beard", "boxes",

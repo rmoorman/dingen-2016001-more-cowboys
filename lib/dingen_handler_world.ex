@@ -1,11 +1,14 @@
-defmodule Dingen.Handler do
-  def init(_type, req, opts) do
+defmodule Dingen.Handler.World do
+  def init(_type, req, _opts) do
     {:ok, req, :no_state}
   end
 
   def handle(req, state) do
-    headers = [{"content-type", "text/plain"}]
-    body = "Hello world"
+    headers = [{"content-type", "text/html"}]
+    body = "
+      <title>Hello world!</title>
+      <p>Hello world!</p>
+    "
     {:ok, req} = :cowboy_req.reply(200, headers, body, req)
     {:ok, req, state}
   end
